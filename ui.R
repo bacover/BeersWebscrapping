@@ -13,42 +13,64 @@ library(shiny)
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel(h1("US Population Analysis by County", align = "center")),
-    HTML('<center><img src="https://www.altadenalibrary.org/wp-content/uploads/2020/02/Document-768x523.png", width="352", height="240"></center>'),
+    titlePanel(h1("Filterable Beers from BeerAdvocate", align = "center")),
+    HTML('<center><img src="https://thisiswhyimdrunk.files.wordpress.com/2014/11/ba-on-us-map-as-jpg.jpg", width="352", height="240"></center>'),
     tags$br(),
-    print("The study of population over time is a very important topic that can have regular meaning in our everyday lives. Beyond the fact that this year is a census year where we can get a more accurate count of our populations, county population can be very interesting and reveal a lot of patterns in our society today. Where are jobs moving towards? If I am buying a house, where are house prices rising? How have things changed since I've been to an area? These are all areas that we can study by looking at population by county over time."),
+    print("BeerAdvocate is an extensive online platform for beer styles, reviews, and scores, but sometimes the filtering available is not everything you are looking for. The following tool allows you to filter results based on a variety of factors to find your next drink easily."),
     tags$br(),
+    tags$br(),
+    #
+    #for style see here, for review guidelines see here, etc....
+    print("For more information on the styles of beer, please see here: "),
+    tags$a(href="https://www.beeradvocate.com/beer/styles/", "Beer Styles"),
+    tags$br(),
+    print("For guidelines on how beers are scored and reviewed, please see here: "),    
+    tags$a(href="https://www.beeradvocate.com/community/threads/how-to-review-a-beer.241156/", "How to Review a Beer"),
+    print(" and "),
+    tags$a(href="https://www.beeradvocate.com/community/threads/beeradvocate-ratings-explained.184726/", "BeerAdvocate Ratings, Explained"),
+    tags$br(),
+    tags$br(),
+    print("Beers are listed by their score in descending order."),
+    tags$br(),
+    tags$br(),
+    #
         br(),
     fluidRow(
-        column(2,
-            sliderInput("dates",
-                        "Dates to compare:",
-                        min = 1970,
-                        max = 2019,
-                        value = c(1970,2019),
-                        sep=""),
+        column(3,
+               selectizeInput("country", "Countries:", choices = sort(unique(beerdata$Country), decreasing=FALSE), multiple=TRUE, selected="United States")
+       ),
+        column(3,
+               selectizeInput("state", "States:", choices = sort(unique(beerdata$State), decreasing=FALSE), multiple=TRUE)
         ),
         column(3,
-               selectizeInput("state", "State:", choices = unique(popdata$state_name), selected = "Alabama")
-               
-               )
+               selectizeInput("style", "Exclude Styles:", choices = sort(unique(beerdata$Style), decreasing=FALSE), multiple=TRUE)
+        ),
+        column(3,
+               selectizeInput("availability", "Exclude Availabilities:", choices = unique(beerdata$Availability), multiple=TRUE)
+        ),
+        column(3,
+               selectizeInput("brewery", "Exclude Breweries:", choices = sort(unique(beerdata$Brewery), decreasing=FALSE), multiple=TRUE)
+        ),
+        column(3,
+               sliderInput("abv",
+                           "ABV %:",
+                           min = 0,
+                           max = 58,
+                           value = c(4,16)),
+                checkboxInput("abvna", "Include Beers without reported ABV", value = FALSE)
+        ),
+        
+        column(3,
+               sliderInput("minratings",
+                           "Minimum Number of Ratings:",
+                           min = 0,
+                           max = 100,
+                           value = 10)
+        ),
+
     ),
 
-    conditionalPanel(
-        condition = "output.ndc",
-        plotlyOutput("popPlot5"),
-        plotlyOutput("popPlot6"),
-    ),
-            plotlyOutput("popPlot4"),
-            plotlyOutput("USPlot4"),
-            plotlyOutput("USPlot5"),
-    conditionalPanel(
-        condition = "output.ndc",
-        plotlyOutput("popPlot3"),
-        plotlyOutput("popPlot1"),
-        plotlyOutput("popPlot2"),
-    ),
-            plotlyOutput("StatePlot1"),
-            plotlyOutput("USPlot3")
+
+            tableOutput('tbl')
 )
 )

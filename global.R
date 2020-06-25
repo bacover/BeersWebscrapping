@@ -14,4 +14,8 @@ library(usmap)
 library(rsconnect)
 
 
-popdata <- read.csv(file="./county_population.csv")
+beerdata <- read.csv(file="./beers_3.csv")
+fctr.cols <- sapply(beerdata, is.factor)
+beerdata[, fctr.cols] <- sapply(beerdata[, fctr.cols], as.character)
+beerdata = select(beerdata, Name=Name, Brewery=Brewery, Style=Style, ABV=ABV, Country=Country, State=State, Availability=Availability, Score=Score, Avg=Avg, Ratings=Ratings, Reviews=Reviews)
+beerdata = arrange(beerdata, desc(Score))
