@@ -55,7 +55,7 @@ shinyUI(fluidPage(
                sliderInput("abv",
                            "ABV %:",
                            min = 0,
-                           max = 58,
+                           max = 68,
                            value = c(4,16)),
                 checkboxInput("abvna", "Include Beers without reported ABV", value = FALSE)
         ),
